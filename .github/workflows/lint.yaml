@@ -29,5 +29,5 @@ jobs:
 
       - name: Static analysis (clang-tidy)
         run: |
-          find . -type f \( -name '*.c' -o -name '*.cpp' \) \
-            | xargs clang-tidy -- -Isrc
+          find . -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+            | xargs -I {} clang-tidy {} -- -Isrc
