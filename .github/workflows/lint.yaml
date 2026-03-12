@@ -22,15 +22,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y clang-format clang-tidy
 
-      - name: Check formatting (clang-format)
-        run: |
-          find . -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
-            | xargs clang-format --dry-run --Werror
-
       - name: Static analysis (clang-tidy)
         run: |
           find . -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
             | xargs -I {} clang-tidy {} -- -Isrc
+
+      - name: Check formatting (clang-format)
+        run: |
+          find . -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+            | xargs clang-format -i
 
       - name: Commit if changes
         run: |
