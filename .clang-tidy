@@ -1,0 +1,12 @@
+Checks: >
+  -*,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling
+HeaderFilterRegex: 'src/.*'
+WarningsAsErrors: ''
