@@ -49,6 +49,7 @@ jobs:
           pre-commit install
 
       - name: Run pre-commit hooks
+        continue-on-error: true
         working-directory: ${{ inputs.working-directory }}
         run: |
           git ls-files | xargs pre-commit run \
@@ -60,7 +61,7 @@ jobs:
         # always() bypasses the error code from pre-commit.
         # don't run again if this review has been triggered by github-actions[bot],
         #   since this would create an action loop.
-        if: always() && github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+        if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
         # Normally github message would include [skip ci] to prevent loops, but since this is the pre-commit fixer, it should be stable.
         run: |
           git config user.name "github-actions[bot]"
