@@ -15,6 +15,10 @@ on:
         required: false
         default: '.'
 
+concurrency:
+  group: pre-commit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
@@ -57,12 +61,16 @@ jobs:
                          --files
 
       - name: Commit if changes
-        if: always() && github.event_name == 'pull_request' # always() bypasses the error code from pre-commit.
+        # always() bypasses the error code from pre-commit.
+        # don't run again if this review has been triggered by github-actions[bot],
+        #   since this would create an action loop.
+        if: always() && github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+        # Normally github message would include [skip ci] to prevent loops, but since this is the pre-commit fixer, it should be stable.
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --cached --quiet; then
-            git commit -m "chore: auto-format code [skip ci]"
+            git commit -m "chore: auto-format code"
             git push
           fi
